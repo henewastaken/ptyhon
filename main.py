@@ -144,6 +144,45 @@ class Poker_hands:
         return values
 
 
+def check_poker_hand(Player):
+    player = Poker_hands(Player.hand)
+
+    pair_check = player.check_pair()
+    two_pair_check = player.check_two_pair()
+    triple_check = player.check_triples()
+    fours_check = player.check_fours()
+    flush_check = player.check_flush()
+    straight_check = player.check_straight()
+    ordered_hand = player.high_card()
+   
+    # Tarkistetaan värisuora
+    if (straight_check and flush_check):
+        return  Player.name + " has Straight flush of:", straight_check, flush_check
+    # Täyskäsi
+    elif (triple_check and pair_check):
+        return Player.name + " has full house of:", triple_check, pair_check
+    # Väri
+    elif (flush_check):
+        return Player.name + " has a straigh of:", flush_check
+    # Suora
+    elif (straight_check):
+        return Player.name + " had a flush of:", straight_check
+    # Neljä samaa
+    elif (fours_check):
+        return Player.name + " has fours of:", fours_check
+    # Kolme samaa
+    elif(triple_check):
+        return Player.name + " has trippes of:", triple_check
+    # Kaksi paria
+    elif (two_pair_check):
+        return Player.name + " have two pairs of:",two_pair_check
+    # Pari
+    elif(pair_check):
+        return Player.name + " have a pair of:", pair_check
+    # Ei mitään / Korkein kortti
+    else:
+        return Player.name + " has only a high card:", ordered_hand
+
 def main():
 
     deck = Deck()
@@ -161,34 +200,7 @@ def main():
     print(bob.name)
     bob.show_hand()
     
-    bob_hand = Poker_hands(bob.hand)
-    pair_check = bob_hand.check_pair()
-    two_pair_check = bob_hand.check_two_pair()
-    triple_check = bob_hand.check_triples()
-    fours_check = bob_hand.check_fours()
-    flush_check = bob_hand.check_flush()
-    straight_check = bob_hand.check_straight()
-    ordered_hand = bob_hand.high_card()
-   
-    if (straight_check and flush_check):
-        print("Bob has Straight flush of:", straight_check, flush_check)
-    elif (triple_check and pair_check):
-        print("Bob has full house of:", triple_check, pair_check)
-    elif (flush_check):
-        print("Bob has a straigh of:", flush_check)
-    elif (straight_check):
-        print("Bob had a flush of:", straight_check)
-    elif (fours_check):
-        print("Bob has fours of:", fours_check)
-    elif(triple_check):
-        print("Bob has trippes of:", triple_check)
-    elif (two_pair_check):
-        print("Bob have two pairs of:",two_pair_check)
-    elif(pair_check):
-        print("Bob have a pair of:", pair_check)
-    else:
-        print("Bob has a high card:", ordered_hand)
-
+    print (check_poker_hand(bob))
 
 
 
