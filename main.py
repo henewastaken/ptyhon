@@ -58,10 +58,13 @@ class Player:
 class Poker_hands:
     # muistiinpano, pätkä laskee montako samooja elem esiintyy
     #        indices = len(set(values))
-
+    joker = False
     def __init__(self, hand):
         self.hand = hand
-
+        # Tarkistetaan jokeri
+        for card in hand:
+            if (card[0] == 0):
+                joker = True
 
     def check_pair(self):
         values = []
