@@ -1,1 +1,1 @@
-# ptyhon
+# Simple Joker Poker game
