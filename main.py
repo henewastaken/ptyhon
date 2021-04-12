@@ -18,7 +18,7 @@ class Deck:
         self.cards.insert(53, (0, "joker"))
 
         # Testipakka
-        #self.cards = [(0,"joker"), (12,"2"), (13,"a"), (11,"a"),(10,"a")]
+        #self.cards = [(12,"a"), (12,"c"), (0,"joker"), (4,"a"),(5,"a")]
                 
     # Pakan tulostus
     def print_deck(self):
@@ -80,41 +80,58 @@ class Poker_hands:
         
 
     def check_hand(self):
-        # Värisuorea
-        if (self.check_straight_flush()):
-            Poker_hands.result = self.name + " has straight flush"
-        # Täyskäs
-        elif (self.check_full_house()):
-            Poker_hands.result = self.name + " has full house"
-        # Väri
-        elif (self.check_flush()):
-            Poker_hands.result = self.name + " has a flush"
-        # Suora
-        elif (self.check_straight()):
-            Poker_hands.result = self.name + " had a straigh"
-        # Neljä samaa
-        elif (self.check_fours()):
-            Poker_hands.result = self.name + " has fours"
-        # Kolme samaa
-        elif(self.check_triples()):
-            Poker_hands.result = self.name + " has tripes"
-       # Kaksi paria
-        elif (self.check_two_pair()):
-            Poker_hands.result = self.name + " have two pairs"
-        #Pari
-        elif(self.check_pair()):
-            Poker_hands.result = self.name + " have a pair"
-        # Suurin kortti
-        elif(self.check_high_card()):
-            Poker_hands.result = self.name + " has high card"
-
-        #print(Poker_hands.numbers)
+        print(self.returner())
+        
+        print(Poker_hands.numbers)
         # Kutstutaan tulostajaa joka tulostaa käden kivasti (kesken)
         self.printer()
 
-    def check_straight_flush(self):
-        if (self.check_flush() and self.check_straight()):
-            return True
+    # Käden tarkistusfunktioita. 
+
+
+
+    def returner(self):
+
+        # Värisuorea
+        if (self.check_straight_flush()):
+            return 10
+        # Täyskäs
+        elif (self.check_full_house()):
+            return 7
+        # Väri
+        elif (self.check_flush()):
+            return 6
+        # Suora
+        elif (self.check_straight()):
+            return 5
+        # Neljä samaa
+        elif (self.check_fours()):
+            return 8
+        # Kolme samaa
+        elif(self.check_triples()):
+            return 4
+       # Kaksi paria
+        elif (self.check_two_pair()):
+            return 3
+        #Pari
+        elif(self.check_pair()):
+            if (self.check_pair() == 3):
+                return 4
+            return 2
+        # Suurin kortti
+        elif(self.check_high_card()):
+            return 1
+    
+    
+    def check_high_card(self):  
+        # Jos sisältää ässän (1), muutetaan se olemaan 14
+        self.check_ace()
+        # Tarkistetaan jokeri    
+        if (self.joker_handler(max(Poker_hands.numbers))):
+            return self.check_pair()   
+
+        Poker_hands.numbers.sort(reverse=True) 
+        return True
 
     def check_pair(self): 
         self.check_ace()
@@ -123,7 +140,8 @@ class Poker_hands:
         if (len(x) == 1):
             if (self.joker_handler(x[0])):
                 if (self.check_triples()):
-                    return self.check_triples()
+                    # Palautetaan 3 returner funktion käsittelyn helpottamiseksi
+                    return 3
             else:
                 #return "pair of:", x
                 return True
@@ -136,7 +154,8 @@ class Poker_hands:
            # Jos jokeri ja kaksi paria, tulee kädestä täyskäsi
             if (self.joker_handler(max(x))):
                 if (self.check_full_house):
-                    return self.check_full_house
+                     # Palautetaan 32 returner funktion käsittelyn helpottamiseksi
+                    return 32
             else:
                 #return "two pairs of:", x
                 return True
@@ -148,7 +167,8 @@ class Poker_hands:
         if (len(x) == 1):
             if (self.joker_handler(x[0])):
                 if (self.check_fours()):
-                    return self.check_fours()
+                    # Palautetaan 4 returner funktion käsittelyn helpottamiseksi
+                    return 4
             else:
                 #return "Triples of:", x
                 return True  
@@ -160,7 +180,8 @@ class Poker_hands:
         if (len(x) == 1):
             if (self.joker_handler(x[0])):
                 if (self.check_fives()):
-                    self.check_fives()
+                    # Palautetaan 5 returner funktion käsittelyn helpottamiseksi
+                    return 5
             else:
                # print("Fours of:", x)
                 return True
@@ -171,10 +192,6 @@ class Poker_hands:
         x = ([k for (k, v) in Counter(Poker_hands.numbers).items() if v == 5])
         if (len(x) == 1):
            #return "Fives of", x
-            return True
-
-    def check_full_house(self):
-        if (self.check_pair() and self.check_triples()):
             return True
 
     def check_flush(self):
@@ -231,15 +248,13 @@ class Poker_hands:
                 return False
         return True   
 
-    def check_high_card(self):
-        # Jos sisältää ässän (1), muutetaan se olemaan 14
-        self.check_ace()
-        # Tarkistetaan jokeri    
-        if (self.joker_handler(max(Poker_hands.numbers))):
-            return self.check_pair()   
+    def check_full_house(self):
+        if (self.check_pair() == True and self.check_triples()):
+            return True
 
-        Poker_hands.numbers.sort(reverse=True) 
-        return True
+    def check_straight_flush(self):
+        if (self.check_flush() and self.check_straight()):
+            return 10
 
     # Muuttaa ässät arvosta 1 arvoon 14
     def check_ace(self):
@@ -279,7 +294,7 @@ def main():
     bob.show_hand()
     
     bob_hand = Poker_hands(bob.hand, bob.name)
-    print(bob_hand.printer())
+    #print(bob_hand.printer())
     #print (check_poker_hand(bob))
     #bob_hand = Poker_hands(bob.hand)
     #print(bob_hand.check_hand())
@@ -297,3 +312,18 @@ if __name__ == "__main__":
     #     winner = ("Alice won", "Bob won",) [alice.hand_total() < bob.hand_total()]
     #     print(f'{winner}')
     
+    #    def check_same_numbers(self, l, amount):
+    #     result = dict((i, Poker_hands.numbers.count(i)) for i in Poker_hands.numbers)
+
+    #     print("max", max(result.values()))
+    #     print("count", list(result.values()).count(max(result.values())))
+    #     print(result.values())
+
+    #     # täyskäsi
+    #     if ()
+
+    #     # Palautetaan max value, joka käsitellään myöhemmin.
+    #     if (max(result.values()) >= 2):
+    #         print("returned", max(result.values()))
+    #         return max(result.values())
+        
