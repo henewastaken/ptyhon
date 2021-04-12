@@ -14,6 +14,7 @@ class Deck:
         self.make_deck()
 
     def make_deck(self):
+        # Luodaan pakka
         self.cards = list(itertools.product(range(1,14), ["Spades", "Clubs", "Diamonds", "Hearts"]))
         self.cards.insert(53, (0, "joker"))
 
@@ -56,13 +57,9 @@ class Player:
 
 
 class Poker_hands:
-    # muistiinpano, pätkä laskee montako samooja elem esiintyy
-    #        indices = len(set(values))
     numbers = []
     suits = []
     result = []
-    joker = False  
-
 
     def __init__(self, hand, name):        
         self.name = name
@@ -77,20 +74,28 @@ class Poker_hands:
 
         self.check_hand()
         
-        
-
+    # Tulostaa pelaajan nimen, ja handler funktion palauttaman kokonaisluvun
+    # mukaan pokerikäden.    
     def check_hand(self):
-        print(self.returner())
-        
-        print(Poker_hands.numbers)
-        # Kutstutaan tulostajaa joka tulostaa käden kivasti (kesken)
-        self.printer()
+        switcher = {
+            1: "high card",
+            2: "pair",
+            3: "two pair",
+            4: "triple",
+            5: "straight",
+            6: "flush",
+            7: "full house",
+            8: "fours",
+            9: "straight flush",
+            10: "fives"
+        }
+        result = switcher.get(self.handdeler())
+        print(self.name, "has a", result)
 
-    # Käden tarkistusfunktioita. 
-
-
-
-    def returner(self):
+    # Kutsutaan käden tarkastus funktioita, ja palautetaan int. 
+    # 1=hai, 2=pari, 3=kaksi paria, 4=kolmoset, 5=suora, 6=väri, 7=täyskäsi,
+    # 8=neloset, 9=vitoset(vain check_fours palauttaa tämän), 10 = värisuora
+    def handdeler(self):
 
         # Värisuorea
         if (self.check_straight_flush()):
@@ -121,8 +126,7 @@ class Poker_hands:
         # Suurin kortti
         elif(self.check_high_card()):
             return 1
-    
-    
+        
     def check_high_card(self):  
         # Jos sisältää ässän (1), muutetaan se olemaan 14
         self.check_ace()
@@ -180,8 +184,8 @@ class Poker_hands:
         if (len(x) == 1):
             if (self.joker_handler(x[0])):
                 if (self.check_fives()):
-                    # Palautetaan 5 returner funktion käsittelyn helpottamiseksi
-                    return 5
+                    # Palautetaan 9 returner funktion käsittelyn helpottamiseksi
+                    return 9
             else:
                # print("Fours of:", x)
                 return True
@@ -255,13 +259,13 @@ class Poker_hands:
     def check_straight_flush(self):
         if (self.check_flush() and self.check_straight()):
             return 10
-
+    
     # Muuttaa ässät arvosta 1 arvoon 14
     def check_ace(self):
         for i, value in enumerate(Poker_hands.numbers):
             if (value == 1):
                 Poker_hands.numbers[i] = 14
-
+    
     # Tarkistetaan jokeri
     # Muuttaa jokerin parametrina annetuksi arvoksi ja palauttaa true jos jokeri on
     def joker_handler(self, new_value):
@@ -271,10 +275,7 @@ class Poker_hands:
             return True 
 
         return False
-
-    # Palauttaa käsien tarkistuksen tuloksen
-    def printer(self):
-        return Poker_hands.result
+        
 
 def main():
 
@@ -293,11 +294,7 @@ def main():
     print(bob.name)
     bob.show_hand()
     
-    bob_hand = Poker_hands(bob.hand, bob.name)
-    #print(bob_hand.printer())
-    #print (check_poker_hand(bob))
-    #bob_hand = Poker_hands(bob.hand)
-    #print(bob_hand.check_hand())
+    Poker_hands(bob.hand, bob.name)
 
 if __name__ == "__main__":
     main()
