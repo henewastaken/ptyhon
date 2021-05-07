@@ -66,11 +66,11 @@ class Poker_hands:
         self.hand = hand
         # Lisätään luvut omaan listaan käsittelyn helpottamiseksi
         for i in self.hand:
-            Poker_hands.numbers.append(i[0])
+            self.numbers.append(i[0])
         
         # Lisätään maat omaan listaan käsittelyn helpottamiseksi
         for i in self.hand:
-            Poker_hands.suits.append(i[1])
+            self.suits.append(i[1])
 
         self.check_hand()
         
@@ -140,7 +140,7 @@ class Poker_hands:
     def check_pair(self): 
         self.check_ace()
         # Tarkistetaan uniikit esiintymisest. Sisältää parin jos v == 2 && len(x) == 1
-        x = ([k for (k, v) in Counter(Poker_hands.numbers).items() if v == 2])
+        x = ([k for (k, v) in Counter(self.numbers).items() if v == 2])
         if (len(x) == 1):
             if (self.joker_handler(x[0])):
                 if (self.check_triples()):
@@ -153,7 +153,7 @@ class Poker_hands:
     def check_two_pair(self):
         self.check_ace()
         # Tarkistetaan uniikit esiintymisest. Sisältää kaksi paria jos v == 2 && len(x) == 2
-        x = ([k for (k, v) in Counter(Poker_hands.numbers).items() if v == 2])
+        x = ([k for (k, v) in Counter(self.numbers).items() if v == 2])
         if (len(x) == 2):
            # Jos jokeri ja kaksi paria, tulee kädestä täyskäsi
             if (self.joker_handler(max(x))):
@@ -167,7 +167,7 @@ class Poker_hands:
     def check_triples(self):
         self.check_ace()
         # Tarkistetaan uniikit esiintymisest. Sisältää kaksi paria jos v == 3 && len(x) == 3
-        x = ([k for (k, v) in Counter(Poker_hands.numbers).items() if v == 3])
+        x = ([k for (k, v) in Counter(self.numbers).items() if v == 3])
         if (len(x) == 1):
             if (self.joker_handler(x[0])):
                 if (self.check_fours()):
@@ -180,7 +180,7 @@ class Poker_hands:
     def check_fours(self):
         self.check_ace()
         # Tarkistetaan uniikit esiintymisest. Sisältää neloset v == 4 && len(x) == 1
-        x = ([k for (k, v) in Counter(Poker_hands.numbers).items() if v == 4])
+        x = ([k for (k, v) in Counter(self.numbers).items() if v == 4])
         if (len(x) == 1):
             if (self.joker_handler(x[0])):
                 if (self.check_fives()):
@@ -193,7 +193,7 @@ class Poker_hands:
     def check_fives(self):
         self.check_ace()
         # Tarkistetaan uniikit esiintymisest. Sisältää vitoset v == 5 &&len(x) == 1
-        x = ([k for (k, v) in Counter(Poker_hands.numbers).items() if v == 5])
+        x = ([k for (k, v) in Counter(self.numbers).items() if v == 5])
         if (len(x) == 1):
            #return "Fives of", x
             return True
@@ -202,53 +202,53 @@ class Poker_hands:
         # Poisrtetaan mahdollinen jokeri, tarksitetaan 4 kortin väri, ja muutetaan
         # jokeri halutuksi maaksi
         if ('joker' in Poker_hands.suits):
-            Poker_hands.suits.remove('joker')
-            x = ([k for (k, v) in Counter(Poker_hands.suits).items() if v == 4])
+            self.suits.remove('joker')
+            x = ([k for (k, v) in Counter(self.suits).items() if v == 4])
             if (len(x) == 1):
-                Poker_hands.suits.append(x[0])
+                self.suits.append(x[0])
                 return True
         else:    
-            x = ([k for (k, v) in Counter(Poker_hands.suits).items() if v == 5])
+            x = ([k for (k, v) in Counter(self.suits).items() if v == 5])
             if (len(x) == 1):
                 return True
 
     def check_straight(self):
         # Muutetaan ässä 14 jos kädessä on 13
-        if (13 in Poker_hands.numbers):
+        if (13 in self.numbers):
             self.check_ace()
         # Järjestetään käsi
-        Poker_hands.numbers.sort()       
+        self.numbers.sort()       
 
         #  Jokerin käsittely. Poisteaan jokeri ja lasketaan käden keskiarvo
-        if (0 in Poker_hands.numbers):
-            Poker_hands.numbers.remove(0)
-            average = sum(Poker_hands.numbers) / len(Poker_hands.numbers)
+        if (0 in self.numbers):
+            self.numbers.remove(0)
+            average = sum(self.numbers) / len(self.numbers)
 
             # Jos keskiarvo on kokonaisluku, on jokeri keskellä suoraa
             # ja kokonaisluvun arvo. Lisätään käteen ja järjestetään uudelleen
             if (average.is_integer()):
-                Poker_hands.numbers.append(int(average))
-                Poker_hands.numbers.sort()
+                self.numbers.append(int(average))
+                self.numbers.sort()
 
             # Käydään käsi läpi ja laksetaan korttien erotukset. 
             # Palautetaan False jo erotus != 1
-            for i in range(len(Poker_hands.numbers)):
-                if (i+1 < len(Poker_hands.numbers) and 
-                        Poker_hands.numbers[i+1] - Poker_hands.numbers[i] != 1):
+            for i in range(len(self.numbers)):
+                if (i+1 < len(self.numbers) and 
+                        self.numbers[i+1] - self.numbers[i] != 1):
                     return False
             
             # Jos käden koko on 4 korttia, lisätään jokeri suoran perään
-            if (len(Poker_hands.numbers) == 4):
+            if (len(self.numbers) == 4):
                 # Tarkisteaan onko kädessä ässä, jolloin jokerista tulee pienin kortti -1
-                if (14 in Poker_hands.numbers):
-                    Poker_hands.numbers.append(Poker_hands.numbers[0]-1)
+                if (14 in self.numbers):
+                    self.numbers.append(self.numbers[0]-1)
                 else:
-                    Poker_hands.numbers.append(Poker_hands.numbers[-1]+1)
+                    self.numbers.append(self.numbers[-1]+1)
             return True
 
         # Suora jokeria, tarkistetaan normaalsiti vertaamalla erotuksia
-        for i in range(len(Poker_hands.numbers)):
-            if (i+1 < len(Poker_hands.numbers) and Poker_hands.numbers[i+1] - Poker_hands.numbers[i] != 1):
+        for i in range(len(self.numbers)):
+            if (i+1 < len(self.numbers) and self.numbers[i+1] - self.numbers[i] != 1):
                 return False
         return True   
 
@@ -262,16 +262,16 @@ class Poker_hands:
     
     # Muuttaa ässät arvosta 1 arvoon 14
     def check_ace(self):
-        for i, value in enumerate(Poker_hands.numbers):
+        for i, value in enumerate(self.numbers):
             if (value == 1):
-                Poker_hands.numbers[i] = 14
+                self.numbers[i] = 14
     
     # Tarkistetaan jokeri
     # Muuttaa jokerin parametrina annetuksi arvoksi ja palauttaa true jos jokeri on
     def joker_handler(self, new_value):
-        if (0 in Poker_hands.numbers):
-            index = Poker_hands.numbers.index(0)
-            Poker_hands.numbers[index] = new_value
+        if (0 in self.numbers):
+            index = self.numbers.index(0)
+            self.numbers[index] = new_value
             return True 
 
         return False
@@ -282,8 +282,13 @@ def main():
     deck = Deck()
     deck.shuffle()
 
-    #alice = Player("Alice")
+    alice = Player("Alice")
     bob = Player("Bob")
+    alice.draw(deck)
+    alice.draw(deck)
+    alice.draw(deck)
+    alice.draw(deck)
+    alice.draw(deck)
 
     bob.draw(deck)
     bob.draw(deck)
@@ -293,8 +298,13 @@ def main():
 
     print(bob.name)
     bob.show_hand()
+
+    print(alice.name)
+    alice.show_hand()
+
     
     Poker_hands(bob.hand, bob.name)
+    Poker_hands(alice.hand, alice.name)
 
 if __name__ == "__main__":
     main()
